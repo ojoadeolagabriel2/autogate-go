@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -20,18 +21,25 @@ func HandleGetAllUser(writer http.ResponseWriter, request *http.Request) {
 	for _, user := range data.Users {
 		val, _ := strconv.ParseInt(key, 10, 64)
 		if user.Id == val {
-			payload, err := json.Marshal(data.Users)
+			payload, err := json.Marshal(user)
 			if err != nil {
 				fmt.Println(err.Error())
 			}
 			writer.Header().Set("Content-Type", "application/json")
 			_, _ = writer.Write(payload)
-			break
+			return
 		}
+	}
+
+	emptyResponse, _ := json.Marshal(make(map[string]string))
+	_, err := writer.Write(emptyResponse)
+	if err != nil {
+		log.Println(err.Error())
 	}
 }
 
 func HandleGetAllUsers(writer http.ResponseWriter, request *http.Request) {
-	_, _ = fmt.Fprintf(writer, "welcome to dexters first page")
-	fmt.Println("detected call to welcome-page")
+	writer.Header().Set("Content-Type", "application/json")
+	payload, _ := json.Marshal(data.Users)
+	_, _ = writer.Write(payload)
 }

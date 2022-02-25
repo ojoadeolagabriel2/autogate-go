@@ -6,7 +6,10 @@ MY_PATH=$(dirname "$0")
 MY_PATH=$(cd "$MY_PATH" && cd .. && pwd)
 CONTAINER_NAME=test_autogate
 
+export PATH=$PATH:/usr/local/go/bin
+
 go mod download
+go test -v "$MY_PATH"/...
 go build
 
 docker system prune -af
