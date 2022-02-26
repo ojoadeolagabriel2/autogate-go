@@ -12,20 +12,21 @@ import (
 	"testing"
 )
 
+const (
+	BaseServerUrl = "http://localhost:12345"
+)
+
 func TestGivenRequestForAllUsersConfirmUsersReturned(t *testing.T) {
 	application := app.App{}
 	application.InitializeRouter()
 	api.HandleRequests(application.Router)
 
-	response, _ := http.Get("http://localhost:12345/users")
+	response, _ := http.Get(fmt.Sprintf("%s/users", BaseServerUrl))
+
 	defer response.Body.Close()
-
 	body, _ := ioutil.ReadAll(response.Body)
-	bodyStr := string(body)
-	fmt.Println(bodyStr)
-
 	var payload []data.User
-	json.Unmarshal(body, &payload)
+	_ = json.Unmarshal(body, &payload)
 
 	if len(payload) != 3 {
 		t.Errorf("got %d expected %d", len(payload), 3)
@@ -33,18 +34,19 @@ func TestGivenRequestForAllUsersConfirmUsersReturned(t *testing.T) {
 }
 
 func TestGivenRequestForUserByIdConfirmUserReturned(t *testing.T) {
+	// given request handler
 	application := app.App{}
 	application.InitializeRouter()
 	api.HandleRequests(application.Router)
 
-	response, _ := http.Get("http://localhost:12345/users/1")
+	// when getting user by id
+	response, _ := http.Get(fmt.Sprintf("%s/users/1", BaseServerUrl))
 	defer response.Body.Close()
 	body, _ := ioutil.ReadAll(response.Body)
-	bodyStr := string(body)
-	fmt.Println(bodyStr)
 	var payload data.User
-	json.Unmarshal(body, &payload)
+	_ = json.Unmarshal(body, &payload)
 
+	// assert payload returned
 	assert.NotNil(t, payload)
 	assert.Equal(t, payload.Id, int64(1))
 }
