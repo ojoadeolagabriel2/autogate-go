@@ -19,11 +19,11 @@ const (
 func TestGivenRequestForAllUsersConfirmUsersReturned(t *testing.T) {
 	application := app.App{}
 	application.InitializeRouter()
-	api.HandleRequests(application.Router)
+	api.RegisterRoutes(application.Router)
 
 	response, _ := http.Get(fmt.Sprintf("%s/users", BaseServerUrl))
 
-	defer response.Body.Close()
+	//defer response.Body.Close()
 	body, _ := ioutil.ReadAll(response.Body)
 	var payload []data.User
 	_ = json.Unmarshal(body, &payload)
@@ -33,15 +33,16 @@ func TestGivenRequestForAllUsersConfirmUsersReturned(t *testing.T) {
 	}
 }
 
-func TestGivenRequestForUserByIdConfirmUserReturned(t *testing.T) {
+func TestGivenRequestForUserByIdConfirmUserReturnedX(t *testing.T) {
 	// given request handler
 	application := app.App{}
 	application.InitializeRouter()
-	api.HandleRequests(application.Router)
+	api.RegisterRoutes(application.Router)
 
 	// when getting user by id
 	response, _ := http.Get(fmt.Sprintf("%s/users/1", BaseServerUrl))
-	defer response.Body.Close()
+
+	//defer response.Body.Close()
 	body, _ := ioutil.ReadAll(response.Body)
 	var payload data.User
 	_ = json.Unmarshal(body, &payload)

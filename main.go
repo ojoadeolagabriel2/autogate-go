@@ -3,7 +3,6 @@ package main
 import (
 	"autogate/api"
 	"autogate/app"
-	"autogate/util"
 )
 
 const (
@@ -13,11 +12,12 @@ const (
 
 func main() {
 	application := app.App{}
-	application.InitializeRouter()
-	application.InitializeDb(
-		util.GetConfig(EnvPgUsernameKey, "postgres"),
-		util.GetConfig(EnvPgPwdKey, "postgres"),
-	)
 
-	api.HandleRequests(application.Router)
+	application.InitializeRouter()
+	//application.InitializeDb(
+	//	util.GetConfig(EnvPgUsernameKey, "postgres"),
+	//	util.GetConfig(EnvPgPwdKey, "postgres"),
+	//)
+
+	api.RegisterRoutes(application.Router)
 }

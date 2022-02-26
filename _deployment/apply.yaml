@@ -1,0 +1,66 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: autogate-go-ns
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: autogate-go-config-map
+  namespace: autogate-go-ns
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autogate-go
+  namespace: autogate-go-ns
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: autogate-go
+  template:
+    metadata:
+      labels:
+        app: autogate-go
+    spec:
+      containers:
+        - name: autogate-go
+          image: app/autogate:latest
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 12345
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 12345
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          ports:
+            - containerPort: 12345
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: autogate-go-config-map
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: autogate-go
+  namespace: autogate-go-ns
+spec:
+  selector:
+    app: autogate-go
+  ports:
+    - port: 50000
+      targetPort: 12345
+  type: LoadBalancer

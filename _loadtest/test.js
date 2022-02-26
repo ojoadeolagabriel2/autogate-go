@@ -13,5 +13,5 @@ export const options = {
 };
 
 export default function () {
-    http.get('http://localhost:12345/users/1');
+    http.get('http://localhost:12345/v1/users/1');
 }
