@@ -32,9 +32,6 @@ func RegisterRoutes(router *mux.Router) {
 		_ = json.NewEncoder(w).Encode(map[string]bool{"ok": true})
 	}).Methods("GET")
 
-	// welcome handler mapping
-	router.HandleFunc(EnvApiPrefixKey + "/", handlers.WelcomePage)
-
 	// user handler mapping
 	router.HandleFunc(EnvApiPrefixKey + "/users", handlers.GetAllUsers).Methods("GET")
 	router.HandleFunc(EnvApiPrefixKey + "/users", handlers.CreateUser).Methods("POST")
